@@ -1,5 +1,6 @@
-### 2.11.3 (Unreleased)
+### 2.12.0 (Unreleased)
 ### Features/Bug Fixes
+* fix: classify companion CLI documentation by context (#547)
 * fix(security): enforce discovery and requested analysis completeness (#410)
 * fix(security): detect letter-spaced P3/P4 instructions and report ambiguous reconstruction as AE6 (#470)
 * feat(cli): add opt-in --fail-on-findings across single-skill, recursive, and MCP registry scans (#469)

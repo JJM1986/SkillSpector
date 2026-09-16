@@ -1,10 +1,10 @@
-# SkillSpector v2.11.3
+# SkillSpector v2.12.0
 
 Release status: candidate; publication pending.
 
 ## Summary
 
-SkillSpector 2.11.3 fixes false AE1 incomplete-analysis results caused by ordinary Markdown and JSON documentation. It also makes discovery and requested-analysis gaps explicit, preserves distinct findings and their source locations, detects letter-spaced prompt instructions, and adds an opt-in CLI gate for any active finding. Oversized files now produce an explicit coverage finding and bounded LLM input.
+SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding and a configurable static-analysis allowance. It also fixes false AE1 incomplete-analysis results caused by ordinary Markdown and JSON documentation, makes discovery and requested-analysis gaps explicit, preserves distinct findings and their source locations, detects letter-spaced prompt instructions, and reduces false positives in companion CLI documentation. Oversized files now produce an explicit coverage finding and bounded LLM input.
 
 ## Highlights
 
@@ -13,6 +13,7 @@ SkillSpector 2.11.3 fixes false AE1 incomplete-analysis results caused by ordina
 - Scan JSON quote candidates in linear time and retain cancellation handling.
 - Preserve distinct full-evidence and rule identities, including findings with identical shortened previews, and retain precise locations for repeated occurrences.
 - Keep requested but unavailable or incomplete semantic analysis visible in completeness metadata and strict CLI/MCP decisions.
+- Classify narrowly proven OAuth, signed self-update, and warned installer documentation in context while retaining the underlying findings and fail-closed controls.
 
 ## Added
 
@@ -21,7 +22,7 @@ SkillSpector 2.11.3 fixes false AE1 incomplete-analysis results caused by ordina
 
 ## Changed
 
-- Align provider setup guidance and update research background documentation.
+- Align provider setup guidance, add the HVTrust badge, and update research background counts ([#434](https://github.com/NVIDIA/SkillSpector/pull/434), [#428](https://github.com/NVIDIA/SkillSpector/pull/428), [#543](https://github.com/NVIDIA/SkillSpector/pull/543)).
 - Reports retain requested LLM intent separately from runtime availability. Incomplete semantic execution remains visible through aggregate reports and CLI/MCP installation gates ([#410](https://github.com/NVIDIA/SkillSpector/pull/410)).
 
 ## Fixed
@@ -37,6 +38,7 @@ SkillSpector 2.11.3 fixes false AE1 incomplete-analysis results caused by ordina
 - Use the project manifest version for RP3 analysis ([#474](https://github.com/NVIDIA/SkillSpector/pull/474)).
 - Prefer exact known-package matches when evaluating SC6 package-name similarity ([#530](https://github.com/NVIDIA/SkillSpector/pull/530)).
 - Avoid treating slash-separated prose as local file references ([#451](https://github.com/NVIDIA/SkillSpector/pull/451)).
+- Reduce false-positive severity for narrowly proven companion CLI OAuth results and signed self-update documentation while preserving risky findings, and provide contextual explanations for warned pipe-to-shell installers ([#547](https://github.com/NVIDIA/SkillSpector/pull/547)).
 - Skip symlink test cases when the platform refuses symlink creation ([#501](https://github.com/NVIDIA/SkillSpector/pull/501)).
 
 ## Security
@@ -44,6 +46,7 @@ SkillSpector 2.11.3 fixes false AE1 incomplete-analysis results caused by ordina
 - Genuine removal instructions remain reportable. The covered unresolved-runtime-command controls retain incomplete coverage and fail strict CLI/MCP installation gates, including when semantic analysis succeeds. Additional runtime-selected command variants remain under investigation (see Known Limitations).
 - JSON string ownership preserves source evidence and does not exempt string contents from analysis.
 - Findings and exit status can change after upgrading: oversized files can add HIGH AE7 findings, letter-spaced instructions can produce P3/P4 or AE6 findings, and previously collapsed distinct matches can increase the retained finding count and risk score. Missing requested analysis remains incomplete even when static analysis finishes.
+- Context-aware companion CLI classification can lower severity, scores, or recommendations for narrowly proven benign documentation. Risky token transfers, unsafe self-update variants, and pipe-to-shell installers remain reportable.
 
 ## Breaking Changes and Migration
 
@@ -58,21 +61,31 @@ SkillSpector 2.11.3 fixes false AE1 incomplete-analysis results caused by ordina
 
 ## Validation
 
-The release candidate includes main commit `0a8b80c36cad7c503f98548d0fa166f90a50294c`. Validation is being repeated against the resulting 2.11.3 artifact after the merges listed above. Earlier results apply only to their recorded commits and are not current-candidate certification.
+The release candidate includes main commit `fc500a19e518ec1f25914b2e0fc9a50bd516d669`. Validated locally with Python 3.12.13:
 
-[Release PR #550](https://github.com/NVIDIA/SkillSpector/pull/550) records the candidate commit, artifact identity, regression and integration results, and remaining release gates.
+- `uv lock --check --offline` passed with the locked dependency set.
+- `make test-ci` passed 5,221 tests, with 14 skipped, 38 deselected, 4 expected failures, and 90% coverage.
+- Ruff lint and format checks passed for all source and test files.
+- The CLI reported `SkillSpector v2.12.0`; the release helper dry run resolved `v2.12.0` and the matching versioned notes.
+- All 10 release helper and workflow tests passed.
+- Wheel and source distributions built successfully, and Twine validated both artifacts.
+- `git diff --check` passed.
+
+Hosted checks, deployment/provider validation, and the separate release gates below remain pending for the final PR head. Earlier candidate results apply only to their recorded commits and are not certification of this candidate.
+
+[Release PR #550](https://github.com/NVIDIA/SkillSpector/pull/550) records the candidate baseline, validation results, known gaps, and remaining release gates.
 
 ## Known Limitations
 
 - Local sanity checks cover the tested inputs and environment; live provider and deployment behavior depend on their configuration.
 - Incomplete inspection is a reportable result. Unsupported inputs, unavailable requested analysis, and resource limits must remain visible; these conditions cannot be treated as a clean scan.
-- The release remains a draft while current-candidate validation and outstanding release issues are assessed. Proposed fixes in unmerged PRs are not included in this candidate.
+- The release remains a candidate while current-head CI and outstanding release issues are assessed. Proposed fixes in unmerged PRs are not included in this candidate.
 - Current validation found that public report serialization can repeat the first occurrence's columns for other matches; SARIF does not yet preserve these column coordinates. The internal occurrence improvements in #409 do not establish correct locations in every output format. See [release validation](https://github.com/NVIDIA/SkillSpector/pull/550) for the tracked report defect.
 - Some runtime-selected command variants and Markdown reference destinations still have open completeness defects. Proposed fixes [#514](https://github.com/NVIDIA/SkillSpector/pull/514) and [#553](https://github.com/NVIDIA/SkillSpector/pull/553) are not included in this candidate.
 
 ## References
 
-- [Changes since v2.11.2](https://github.com/NVIDIA/SkillSpector/compare/v2.11.2...v2.11.3)
+- [Changes since v2.11.2](https://github.com/NVIDIA/SkillSpector/compare/v2.11.2...v2.12.0)
 - [AE1 documentation fix #516](https://github.com/NVIDIA/SkillSpector/pull/516)
 - [Static analysis time allowance #522](https://github.com/NVIDIA/SkillSpector/pull/522)
 
