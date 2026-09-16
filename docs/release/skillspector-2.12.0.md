@@ -4,7 +4,7 @@ Release status: candidate; publication pending.
 
 ## Summary
 
-SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding and a configurable static-analysis allowance. It also fixes false AE1 incomplete-analysis results caused by ordinary Markdown and JSON documentation, makes discovery and requested-analysis gaps explicit, preserves distinct findings and their source locations, detects letter-spaced prompt instructions, and reduces false positives in companion CLI documentation. Oversized files now produce an explicit coverage finding and bounded LLM input.
+SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding and a configurable static-analysis allowance. It also fixes false AE1 incomplete-analysis results caused by ordinary Markdown and JSON documentation, makes discovery and requested-analysis gaps explicit, preserves distinct findings and their source locations, detects letter-spaced prompt instructions, and reduces false positives in companion CLI documentation and literal current-skill references. Oversized files now produce an explicit coverage finding and bounded LLM input.
 
 ## Highlights
 
@@ -14,6 +14,7 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding and a configu
 - Preserve distinct full-evidence and rule identities, including findings with identical shortened previews, and retain precise locations for repeated occurrences.
 - Keep requested but unavailable or incomplete semantic analysis visible in completeness metadata and strict CLI/MCP decisions.
 - Classify narrowly proven OAuth, signed self-update, and warned installer documentation in context while retaining the underlying findings and fail-closed controls.
+- Suppress AS3 only when a literal `skills/<name>/SKILL.md` path identifies the skill currently being scanned, while retaining peer-skill, transformed, and enumeration findings.
 
 ## Added
 
@@ -39,6 +40,7 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding and a configu
 - Prefer exact known-package matches when evaluating SC6 package-name similarity ([#530](https://github.com/NVIDIA/SkillSpector/pull/530)).
 - Avoid treating slash-separated prose as local file references ([#451](https://github.com/NVIDIA/SkillSpector/pull/451)).
 - Reduce false-positive severity for narrowly proven companion CLI OAuth results and signed self-update documentation while preserving risky findings, and provide contextual explanations for warned pipe-to-shell installers ([#547](https://github.com/NVIDIA/SkillSpector/pull/547)).
+- Ignore literal AS3 references to the current skill, derived from the scan-root basename or manifest name, without suppressing peer-skill or obfuscated-path access ([#506](https://github.com/NVIDIA/SkillSpector/pull/506)).
 - Skip symlink test cases when the platform refuses symlink creation ([#501](https://github.com/NVIDIA/SkillSpector/pull/501)).
 
 ## Security
@@ -47,6 +49,7 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding and a configu
 - JSON string ownership preserves source evidence and does not exempt string contents from analysis.
 - Findings and exit status can change after upgrading: oversized files can add HIGH AE7 findings, letter-spaced instructions can produce P3/P4 or AE6 findings, and previously collapsed distinct matches can increase the retained finding count and risk score. Missing requested analysis remains incomplete even when static analysis finishes.
 - Context-aware companion CLI classification can lower severity, scores, or recommendations for narrowly proven benign documentation. Risky token transfers, unsafe self-update variants, and pipe-to-shell installers remain reportable.
+- Literal current-skill references no longer produce AS3 findings. Peer-skill references, transformed or obfuscated paths, explicit enumeration, AS1, and AS2 remain reportable.
 
 ## Breaking Changes and Migration
 
@@ -61,10 +64,10 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding and a configu
 
 ## Validation
 
-The release candidate includes main commit `fc500a19e518ec1f25914b2e0fc9a50bd516d669`. Validated locally with Python 3.12.13:
+The release candidate includes main commit `9e078093eb8e621852e937cdc1757dca1c41ad05`. Validated locally with Python 3.12.13:
 
 - `uv lock --check --offline` passed with the locked dependency set.
-- `make test-ci` passed 5,221 tests, with 14 skipped, 38 deselected, 4 expected failures, and 90% coverage.
+- `make test-ci` passed 5,235 tests, with 14 skipped, 38 deselected, 4 expected failures, and 90% coverage.
 - Ruff lint and format checks passed for all source and test files.
 - The CLI reported `SkillSpector v2.12.0`; the release helper dry run resolved `v2.12.0` and the matching versioned notes.
 - All 10 release helper and workflow tests passed.
