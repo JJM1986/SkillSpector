@@ -1,5 +1,10 @@
-### 2.11.3 (Tuesday, September 15, 2026)
+### 2.11.3 (Unreleased)
 ### Features/Bug Fixes
+* fix(security): enforce discovery and requested analysis completeness (#410)
+* fix(security): detect letter-spaced P3/P4 instructions and report ambiguous reconstruction as AE6 (#470)
+* feat(cli): add opt-in --fail-on-findings across single-skill, recursive, and MCP registry scans (#469)
+* fix(security): preserve exact finding identity, evidence, and occurrence locations (#409)
+* fix: report oversized-file coverage gaps as AE7 and bound their LLM input (#509)
 * fix: avoid false analysis limits in documentation (#516)
 * fix: scan JSON quote candidates in linear time (#521)
 * feat: configure the static analysis time allowance (#522)
