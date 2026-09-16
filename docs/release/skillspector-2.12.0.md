@@ -74,7 +74,7 @@ The release candidate includes main commit `9e078093eb8e621852e937cdc1757dca1c41
 - Wheel and source distributions built successfully, and Twine validated both artifacts.
 - `git diff --check` passed.
 
-Hosted checks, deployment/provider validation, and the separate release gates below remain pending for the final PR head. Earlier candidate results apply only to their recorded commits and are not certification of this candidate.
+All five hosted checks passed on the validated release head `5134f62458fa235b487e823d1c0472be54678295`: change detection, lint, unit tests, DCO, and Docker smoke ([run 35127688213](https://github.com/NVIDIA/SkillSpector/actions/runs/35127688213)). Deployment/provider validation and the separate release gates below remain pending. Earlier candidate results apply only to their recorded commits and are not certification of this candidate.
 
 [Release PR #550](https://github.com/NVIDIA/SkillSpector/pull/550) records the candidate baseline, validation results, known gaps, and remaining release gates.
 
@@ -82,7 +82,7 @@ Hosted checks, deployment/provider validation, and the separate release gates be
 
 - Local sanity checks cover the tested inputs and environment; live provider and deployment behavior depend on their configuration.
 - Incomplete inspection is a reportable result. Unsupported inputs, unavailable requested analysis, and resource limits must remain visible; these conditions cannot be treated as a clean scan.
-- The release remains a candidate while current-head CI and outstanding release issues are assessed. Proposed fixes in unmerged PRs are not included in this candidate.
+- The release remains a candidate while outstanding review and release issues are assessed. Proposed fixes in unmerged PRs are not included in this candidate.
 - Current validation found that public report serialization can repeat the first occurrence's columns for other matches; SARIF does not yet preserve these column coordinates. The internal occurrence improvements in #409 do not establish correct locations in every output format. See [release validation](https://github.com/NVIDIA/SkillSpector/pull/550) for the tracked report defect.
 - Some runtime-selected command variants and Markdown reference destinations still have open completeness defects. Proposed fixes [#514](https://github.com/NVIDIA/SkillSpector/pull/514) and [#553](https://github.com/NVIDIA/SkillSpector/pull/553) are not included in this candidate.
 
