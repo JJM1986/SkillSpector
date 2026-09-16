@@ -41,7 +41,7 @@ SkillSpector 2.11.3 fixes false AE1 incomplete-analysis results caused by ordina
 
 ## Security
 
-- Genuine removal instructions remain reportable. Unresolved runtime commands retain incomplete coverage and fail strict CLI/MCP installation gates, including when semantic analysis succeeds.
+- Genuine removal instructions remain reportable. The covered unresolved-runtime-command controls retain incomplete coverage and fail strict CLI/MCP installation gates, including when semantic analysis succeeds. Additional runtime-selected command variants remain under investigation (see Known Limitations).
 - JSON string ownership preserves source evidence and does not exempt string contents from analysis.
 - Findings and exit status can change after upgrading: oversized files can add HIGH AE7 findings, letter-spaced instructions can produce P3/P4 or AE6 findings, and previously collapsed distinct matches can increase the retained finding count and risk score. Missing requested analysis remains incomplete even when static analysis finishes.
 
@@ -67,6 +67,8 @@ The release candidate includes main commit `0a8b80c36cad7c503f98548d0fa166f90a50
 - Local sanity checks cover the tested inputs and environment; live provider and deployment behavior depend on their configuration.
 - Incomplete inspection is a reportable result. Unsupported inputs, unavailable requested analysis, and resource limits must remain visible; these conditions cannot be treated as a clean scan.
 - The release remains a draft while current-candidate validation and outstanding release issues are assessed. Proposed fixes in unmerged PRs are not included in this candidate.
+- Current validation found that public report serialization can repeat the first occurrence's columns for other matches; SARIF does not yet preserve these column coordinates. The internal occurrence improvements in #409 do not establish correct locations in every output format. See [release validation](https://github.com/NVIDIA/SkillSpector/pull/550) for the tracked report defect.
+- Some runtime-selected command variants and Markdown reference destinations still have open completeness defects. Proposed fixes [#514](https://github.com/NVIDIA/SkillSpector/pull/514) and [#553](https://github.com/NVIDIA/SkillSpector/pull/553) are not included in this candidate.
 
 ## References
 
