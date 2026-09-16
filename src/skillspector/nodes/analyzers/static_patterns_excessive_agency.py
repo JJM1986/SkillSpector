@@ -35,7 +35,7 @@ from skillspector.models import AnalyzerFinding, Location, Severity
 from skillspector.state import AnalyzerNodeResponse, SkillspectorState
 
 from . import static_runner
-from .common import get_context, get_line_number
+from .common import SourceLocationIndex, get_context, get_line_number
 from .pattern_defaults import PatternCategory
 
 logger = get_logger(__name__)
@@ -299,6 +299,7 @@ def _inline_command_span(line: str, inline: re.Match[str]) -> tuple[int, int] | 
 def _ea5_findings(content: str, file_path: str) -> list[AnalyzerFinding]:
     """Detect declarative model pins and actionable coding-CLI model switches."""
     findings: list[AnalyzerFinding] = []
+    locations = SourceLocationIndex(content, file_path)
     tag = [PatternCategory.EXCESSIVE_AGENCY.value]
     bounds = _frontmatter_bounds(content, file_path)
     body_start = 0
@@ -317,14 +318,12 @@ def _ea5_findings(content: str, file_path: str) -> list[AnalyzerFinding]:
                     rule_id="EA5",
                     message="External Model or Provider Selection",
                     severity=Severity.MEDIUM,
-                    location=Location(
-                        file=file_path,
-                        start_line=get_line_number(content, absolute_start),
-                    ),
+                    location=locations.location(absolute_start, start + match.end()),
                     confidence=0.9,
                     tags=tag,
                     context=get_context(content, absolute_start),
                     matched_text=match.group(0)[:200],
+                    complete_match=match.group(0),
                     evidence={"selection_surface": "frontmatter", "selection_key": key},
                 )
             )
@@ -366,19 +365,18 @@ def _ea5_findings(content: str, file_path: str) -> list[AnalyzerFinding]:
             if absolute in seen:
                 continue
             seen.add(absolute)
+            complete_match = content[absolute[0] : absolute[1]]
             findings.append(
                 AnalyzerFinding(
                     rule_id="EA5",
                     message="External Model or Provider Selection",
                     severity=Severity.HIGH,
-                    location=Location(
-                        file=file_path,
-                        start_line=get_line_number(content, absolute[0]),
-                    ),
+                    location=locations.location(absolute[0], absolute[1]),
                     confidence=0.9,
                     tags=tag,
                     context=get_context(content, absolute[0]),
-                    matched_text=content[absolute[0] : absolute[1]][:200],
+                    matched_text=complete_match[:200],
+                    complete_match=complete_match,
                     evidence={"selection_surface": "command"},
                 )
             )
@@ -411,6 +409,7 @@ def analyze(content: str, file_path: str, file_type: str) -> list[AnalyzerFindin
                     tags=tag,
                     context=ctx(match.start()),
                     matched_text=match.group(0)[:200],
+                    complete_match=match.group(0),
                 )
             )
     for pattern, confidence in EA2_PATTERNS:
@@ -427,6 +426,7 @@ def analyze(content: str, file_path: str, file_type: str) -> list[AnalyzerFindin
                     tags=tag,
                     context=context_text,
                     matched_text=match.group(0)[:200],
+                    complete_match=match.group(0),
                 )
             )
     for pattern, confidence in EA3_PATTERNS:
@@ -442,6 +442,7 @@ def analyze(content: str, file_path: str, file_type: str) -> list[AnalyzerFindin
                     tags=tag,
                     context=ctx(match.start()),
                     matched_text=match.group(0)[:200],
+                    complete_match=match.group(0),
                 )
             )
     for pattern, confidence in EA4_PATTERNS:
@@ -457,6 +458,7 @@ def analyze(content: str, file_path: str, file_type: str) -> list[AnalyzerFindin
                     tags=tag,
                     context=ctx(match.start()),
                     matched_text=match.group(0)[:200],
+                    complete_match=match.group(0),
                 )
             )
     findings.extend(_ea5_findings(content, file_path))
