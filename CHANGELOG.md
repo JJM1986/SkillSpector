@@ -1,5 +1,12 @@
 ### 2.12.0 (Unreleased)
 ### Features/Bug Fixes
+* fix(hooks): fail closed on unmodeled payload analysis (#573)
+* perf(security): cache pure security-view predicates (#570)
+* perf(security): accelerate token-gap classification with ASCII fast paths (#569)
+* fix(input): download raw content for GitHub and GitLab blob URLs (#566)
+* fix(cli): emit recursive SARIF reports to stdout (#565)
+* fix(security): keep line breaks out of letter-spacing runs (#564)
+* feat(cli): add streamed progress, file discovery, and Gemini 3.5 Flash metadata (#7)
 * fix(providers): honor model registry overrides for CLI providers (#463)
 * test(input): inject secure-open failures on the primitive the platform uses (#503)
 * feat(analyzer): add OpenCode-native SkillSpector invocation skill and tool (#537)
