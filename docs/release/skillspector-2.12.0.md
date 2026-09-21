@@ -4,10 +4,13 @@ Release status: candidate; publication pending.
 
 ## Summary
 
-SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding, a configurable static-analysis allowance, an OpenCode CLI semantic-analysis provider, an OpenCode-native scan command and tool, Gemini 3.5 Flash registry guidance, and bounded interactive CLI progress with discovered-file visibility. It also fixes false AE1 incomplete-analysis results caused by ordinary Markdown and JSON documentation, makes discovery and requested-analysis gaps explicit, inventories excluded executable content, fails closed on unmodeled active-hook payloads, preserves distinct findings and their source locations, emits valid recursive SARIF to standard output, handles forge `/blob/` links as raw files, and reduces both false positives and repeated security-view work. Oversized files now produce an explicit coverage finding and bounded LLM input.
+SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding, a configurable static-analysis allowance, OpenCode integrations, Gemini 3.5 Flash registry guidance, interactive scan progress, and TP4 analysis of executable Markdown fences. It also strengthens local input and report handling, expands detection of reflective Python access and shipped bytecode, retries transient provider failures, and distinguishes missing references from ambiguous MCP installation blockers. The release includes discovery, completeness, finding-identity, SARIF output, raw forge-file input, performance, and false-positive fixes described below.
 
 ## Highlights
 
+- Extend TP4 semantic checks to executable Markdown fences, detect reflective Python module lookups, and find shipped bytecode inside Python environments.
+- Retry transient provider failures within the workflow deadline and constrain local registry, baseline, and Pi extension inputs and report writes.
+- Distinguish missing file references from ambiguous references in the MCP installation decision, while preserving completeness caveats in reports.
 - Run semantic analysis through the new `opencode_cli` provider and invoke SkillSpector from OpenCode through a native `/skillspector` command and `skillspector_scan` tool.
 - Use `gemini-3.5-flash` through the existing OpenAI-compatible provider, and see bounded live progress plus a control-safe discovered-file tree during non-verbose interactive scans.
 - Emit merged recursive SARIF on standard output without status-text contamination, and scan GitHub/GitLab `/blob/` links as their raw file contents instead of forge HTML.
@@ -27,7 +30,8 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding, a configurab
 
 ## Added
 
-- `SKILLSPECTOR_PROVIDER=opencode_cli` runs semantic analysis through a local OpenCode login. The verified deny-all policy requires exactly OpenCode 1.18.30; authentication, version, policy, empty-output, or event-envelope failures fail closed. `SKILLSPECTOR_MODEL` remains optional ([#536](https://github.com/NVIDIA/SkillSpector/pull/536)).
+- `SKILLSPECTOR_PROVIDER=opencode_cli` runs semantic analysis through a local OpenCode login. The verified deny-all policy requires exactly OpenCode 1.18.31; authentication, version, policy, empty-output, or event-envelope failures fail closed. `SKILLSPECTOR_MODEL` remains optional ([#536](https://github.com/NVIDIA/SkillSpector/pull/536), [#575](https://github.com/NVIDIA/SkillSpector/pull/575)).
+- TP4 semantic analysis includes non-empty, closed Markdown/text fences with recognized executable-language labels, using the validated provider-eligible cache and original document line numbers. Size, count, prompt, and runtime limits remain explicit coverage constraints ([#421](https://github.com/NVIDIA/SkillSpector/pull/421)).
 - The repository-provided OpenCode extension adds a static-by-default `/skillspector` command and `skillspector_scan` tool. Copy `.opencode/` from a checkout to install it; the wheel does not install the extension. It resolves the binary from `SKILLSPECTOR_BIN`, a worktree `.venv`, or `PATH`, requests required host capabilities before launch, rejects symlinked target/output/binary paths, and uses a 120-second timeout with bounded, redacted output. Semantic analysis is opt-in through `noLlm=false` and the provider environment ([#537](https://github.com/NVIDIA/SkillSpector/pull/537)).
 - `SKILLSPECTOR_MAX_STATIC_ANALYSIS_SECONDS_PER_ARTIFACT` configures the static pattern and YARA time allowance per artifact; its default increases from 30 to 300 seconds. The remaining workflow deadline still bounds both analyzers.
 - `skillspector scan --fail-on-findings` exits with code 1 when a scan reports any active finding, including findings below the default risk-score threshold. It applies to single-skill, recursive, and MCP registry scans. Skill scans evaluate active findings after suppression ([#469](https://github.com/NVIDIA/SkillSpector/pull/469)).
@@ -35,15 +39,22 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding, a configurab
 
 ## Changed
 
+- Missing local references now use `reference_missing`; ambiguous matches retain `reference_unresolved`. The MCP skill-scan installation decision can allow a scan whose only caveats are missing references, provided all discovered files were inspected and the other risk, execution, and requested-analysis checks pass. Completeness metadata and the report recommendation still retain the caveat ([#526](https://github.com/NVIDIA/SkillSpector/pull/526)).
+- Remove the OpenSSF Scorecard and HVTrust README badges ([#582](https://github.com/NVIDIA/SkillSpector/pull/582)).
 - Non-verbose scans attached to an interactive terminal now stream graph execution and render bounded progress, completed analyzer rules, and a control-safe discovered-file tree to standard error. Machine-readable standard output and exit-code behavior remain intact ([#7](https://github.com/NVIDIA/SkillSpector/pull/7)).
 - Printable-ASCII token-gap scans use precomputed classification tables and a whole-text fast path; repeated pure security-view predicates use bounded memoization. The measured 901-skill corpus retained byte-identical findings and coverage outcomes while reducing p95, p99, and total CPU cost ([#569](https://github.com/NVIDIA/SkillSpector/pull/569), [#570](https://github.com/NVIDIA/SkillSpector/pull/570)).
 - CLI-backed providers now honor `SKILLSPECTOR_MODEL_REGISTRY` for context and output-token limits. Missing entries retain the existing fallback behavior; malformed registry structures or invalid and non-positive budgets warn and fall back ([#463](https://github.com/NVIDIA/SkillSpector/pull/463)).
 - The repository's `contrib/batch_scan` tool reuses the graph's validated `llm_file_cache` for multilingual language detection and gap-fill, avoiding a second raw filesystem read and retaining provider/local-only boundaries. `contrib` remains outside the wheel ([#558](https://github.com/NVIDIA/SkillSpector/pull/558)).
-- Align provider setup guidance, add the HVTrust badge, and update research background counts ([#434](https://github.com/NVIDIA/SkillSpector/pull/434), [#428](https://github.com/NVIDIA/SkillSpector/pull/428), [#543](https://github.com/NVIDIA/SkillSpector/pull/543)).
+- Align provider setup guidance and update research background counts ([#434](https://github.com/NVIDIA/SkillSpector/pull/434), [#543](https://github.com/NVIDIA/SkillSpector/pull/543)). The HVTrust badge added in [#428](https://github.com/NVIDIA/SkillSpector/pull/428) was subsequently removed in #582.
 - Reports retain requested LLM intent separately from runtime availability. Incomplete semantic execution remains visible through aggregate reports and CLI/MCP installation gates ([#410](https://github.com/NVIDIA/SkillSpector/pull/410)).
 
 ## Fixed
 
+- Retry transient connection, timeout, selected HTTP status, and Bedrock service/throttling failures with bounded backoff and bounded `Retry-After` handling. Retry waits respect the workflow deadline; Bedrock SDK retries are disabled to avoid stacking retry budgets, and unrecovered failures retain incomplete analysis with sanitized diagnostics ([#555](https://github.com/NVIDIA/SkillSpector/pull/555)).
+- Bound local MCP Registry JSON and suppression-baseline YAML/JSON before expansion, reject non-regular input files, and limit bytes, nesting, and records. The Pi extension resolves an explicit installed binary and stages report writes before atomically publishing within the workspace, preserving diagnostic reports where available ([#562](https://github.com/NVIDIA/SkillSpector/pull/562)).
+- Constrain prose-oriented static patterns to a single paragraph so unrelated text across blank lines does not combine into a finding; executable and structured-code patterns retain multiline matching ([#491](https://github.com/NVIDIA/SkillSpector/pull/491)).
+- Detect imported-module namespace access through `__dict__` or `vars(module)` using subscripts, `get`, `setdefault`, and `pop`: dynamic keys produce AST7 and dangerous literal names produce AST9 ([#517](https://github.com/NVIDIA/SkillSpector/pull/517)).
+- Inspect `.venv`, `venv`, and `.tox` for shipped `.pyc`/`.pyo` files under existing traversal limits so Python environments cannot silently hide SC8 bytecode findings ([#571](https://github.com/NVIDIA/SkillSpector/pull/571)).
 - Active hook declarations whose payload data flow remains unmodeled now retain the BH1 mechanism finding and record partial `opaque_content` coverage, making completeness false and preventing a `SAFE` recommendation ([#573](https://github.com/NVIDIA/SkillSpector/pull/573)).
 - Letter-spacing reconstruction no longer treats a logical line break as the start of a token run, so CRLF or punctuation on the previous heading cannot turn identifier-adjacent text into false P3/P4 findings; AE6 still records the ambiguous form ([#564](https://github.com/NVIDIA/SkillSpector/pull/564)).
 - Recursive `--format sarif` scans without `--output` now emit the merged SARIF log to standard output. SARIF advisories, progress, verbose status, and transitive warnings stay on standard error so the output remains parseable ([#565](https://github.com/NVIDIA/SkillSpector/pull/565)).
@@ -74,6 +85,9 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding, a configurab
 
 ## Security
 
+- Local registry files are limited to 16 MiB, 64 nesting levels, and 10,000 combined server/package/remote records. Baselines are limited to 2 MiB, 64 nesting levels, and 10,000 rules/fingerprints, with additional bounds on YAML nodes, scalars, and alias expansion.
+- Pi extension reports must remain within the workspace. Staged replacement avoids writing through existing hard links; symlink and non-file destinations are rejected. This changes the Pi extension's output-path and executable-discovery requirements.
+- Agent CLI subprocesses also remove Anthropic proxy and SkillSpector API credentials from inherited environment variables ([#562](https://github.com/NVIDIA/SkillSpector/pull/562)).
 - Active hook payloads whose data flow is not modeled remain visible through BH1 and now make analysis partial with `opaque_content`, preventing a complete or `SAFE` result for those hooks.
 - Excluded executable or loadable content is inventoried before exclusion. Referenced or out-of-coverage bytes now produce SC9 and incomplete-analysis evidence that blocks strict installation gates; the narrow exception is limited to direct, non-binary `.git/hooks/*.sample` files.
 - Multilingual batch analysis consumes only the validated provider-eligible snapshot, so language detection and gap-fill do not reread local-only or replaced path content after the core scan.
@@ -89,10 +103,14 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding, a configurab
 - Interactive non-verbose scans now show progress and discovered files on standard error. Machine-readable JSON and SARIF remain clean on standard output; use `--verbose` to retain the non-streamed diagnostic path.
 - Scanning GitHub or GitLab `/blob/` links now analyzes raw file bytes rather than the forge viewer page. Findings and recommendations can change because the intended content is finally scanned.
 - Active hooks with unmodeled payload flows now produce incomplete coverage and cannot remain `SAFE`; identifier-adjacent letter spacing can lose false P3/P4 findings while retaining AE6.
-- `opencode_cli` is opt-in and requires an authenticated OpenCode 1.18.30 executable; other versions fail closed because their deny-all policy has not been verified. The OpenCode-native tool is installed by copying `.opencode/` from a checkout and defaults to static analysis; set `noLlm=false` and configure the provider environment to request semantic analysis.
+- `opencode_cli` is opt-in and requires an authenticated OpenCode 1.18.31 executable. Users of earlier 2.12.0 candidates pinned to 1.18.30 must update OpenCode; all other versions fail closed. The OpenCode-native tool is installed by copying `.opencode/` from a checkout and defaults to static analysis; set `noLlm=false` and configure the provider environment to request semantic analysis.
+- Pi extension users must install SkillSpector in the extension's `.venv` or set `SKILLSPECTOR_BIN` to an existing absolute executable path; ambient `PATH` lookup is no longer used. Move report outputs into the current workspace. These restrictions apply to the Pi extension, not the standalone CLI or OpenCode tool.
+- Oversized or over-complex local registry and baseline files must be reduced to the documented bounds. Consumers of ledger reason codes should recognize `reference_missing` separately from `reference_unresolved`; `safe_to_install` may now be true when missing references are the only completeness caveat.
+- TP4 checks can add semantic work and findings for accepted Markdown fences; AST7/AST9 and SC8 can add findings for reflective lookups and bytecode in Python environments. Paragraph-boundary fixes can remove false prose matches.
+- Transient provider failures can now incur bounded additional requests and backoff within the workflow deadline; live-provider cost and latency depend on the configured service.
 - Existing CLI-provider deployments that set `SKILLSPECTOR_MODEL_REGISTRY` now use its valid token budgets. Invalid or non-positive values warn and fall back instead of aborting.
 - Scans that previously treated excluded executable content as clean can now become incomplete with SC9 and `DO_NOT_INSTALL`; consumers should retain completeness and exclusion evidence.
-- No new configuration is required. Static analysis can now run longer within the existing workflow deadline. Set `SKILLSPECTOR_MAX_STATIC_ANALYSIS_SECONDS_PER_ARTIFACT=30` to retain the previous per-artifact allowance, and restart the SkillSpector process after changing the setting ([#522](https://github.com/NVIDIA/SkillSpector/pull/522)).
+- The static-analysis allowance needs no new configuration. Static analysis can now run longer within the existing workflow deadline. Set `SKILLSPECTOR_MAX_STATIC_ANALYSIS_SECONDS_PER_ARTIFACT=30` to retain the previous per-artifact allowance, and restart the SkillSpector process after changing the setting ([#522](https://github.com/NVIDIA/SkillSpector/pull/522)).
 - `--fail-on-findings` is opt-in. Combine it with `--fail-on-incomplete` when CI must reject either active findings or incomplete coverage. Code 2 still denotes an input or execution error; a nonzero exit alone does not identify which condition occurred.
 - Consumers should retain completeness/degradation metadata and inspect findings as well as exit status. Explicitly use `--no-llm` for an intended static-only scan; requesting LLM analysis without an available provider is incomplete.
 - Third-party dependency versions are unchanged from 2.11.2.
@@ -103,19 +121,16 @@ SkillSpector 2.12.0 adds an opt-in CLI gate for any active finding, a configurab
 
 ## Validation
 
-The release candidate is synchronized through main commit `548e5e0afd25595ef039c27cdeb283413c282c71` and was validated locally on the refreshed release-catalog working tree with Python 3.12.13:
+The release catalog covers 47 merged PRs since v2.11.2 and is synchronized through main commit `a345778d75e833d25ab6a3f4c968985f3bf35c2d`. Local release checks use Python 3.12.13:
 
-- `uv lock --check --offline` passed with the locked dependency set.
-- `make test-ci` passed 5,744 tests, with 14 skipped, 39 deselected, 4 expected failures, and 90% coverage.
-- The affected CLI, model-registry, input, security-view, hook-completeness, and release-helper suites passed 1,177 tests, with 10 skipped and 1 deselected.
+- `uv sync --locked --all-extras --python 3.12` installed the locked dependency set without changing the lockfile.
 - Ruff lint and format checks passed for all source and test files.
 - The CLI reported `SkillSpector v2.12.0`; the release helper dry run resolved `v2.12.0` and the matching versioned notes.
-- All 10 release helper and workflow tests passed.
-- All 44 OpenCode TypeScript tests passed.
+- All 65 OpenCode and Pi extension JavaScript/TypeScript tests passed.
 - Wheel and source distributions built successfully, and Twine validated both artifacts.
 - `git diff --check` passed.
 
-The current PR head and its exact-head checks are the source of truth for hosted validation. Deployment/provider validation and the separate release gates below remain pending. Earlier candidate results apply only to their recorded commits and are not certification of this candidate.
+The release PR records the full Python test results and hosted checks for the current commit. Earlier test counts and hosted runs apply only to their recorded commits. Deployment/provider validation and the separate release gates below remain pending.
 
 [Release PR #550](https://github.com/NVIDIA/SkillSpector/pull/550) records the candidate baseline, validation results, known gaps, and remaining release gates.
 
@@ -143,5 +158,9 @@ The current PR head and its exact-head checks are the source of truth for hosted
 - [Raw forge file URLs #566](https://github.com/NVIDIA/SkillSpector/pull/566)
 - [Security-view performance #569](https://github.com/NVIDIA/SkillSpector/pull/569), [#570](https://github.com/NVIDIA/SkillSpector/pull/570)
 - [Fail-closed hook payload coverage #573](https://github.com/NVIDIA/SkillSpector/pull/573)
+- [Local input and Pi extension hardening #562](https://github.com/NVIDIA/SkillSpector/pull/562)
+- [MCP missing-reference handling #526](https://github.com/NVIDIA/SkillSpector/pull/526)
+- [Markdown fence analysis #421](https://github.com/NVIDIA/SkillSpector/pull/421)
+- [Transient provider retries #555](https://github.com/NVIDIA/SkillSpector/pull/555)
 
 Prepared by Codex for Mohit Gupta.
