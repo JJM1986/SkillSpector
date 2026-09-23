@@ -68,10 +68,11 @@ _PERL_LITERAL_PRINT_RE = re.compile(
     r"^[ \t]*+print\b(?:[ \t]++(?:STDOUT|STDERR)\b)?[ \t]*+(?P<paren>\()?[ \t]*+"
     r"(?P<literal>\"(?:\\[\\\"'nrt]|[^\\\"$@`\r\n])*+\""
     r"|'(?:\\[\\\"'nrt]|[^\\'$@`\r\n])*+')"
-    r"[ \t]*+(?(paren)\))[ \t]*+;[ \t]*+(?:\#[^\r\n]*+)?$",
+    r"[ \t]*+(?(paren)\))[ \t]*+;[ \t]*+(?:\#[^\r\n]*+)?\r?$",
     re.MULTILINE,
 )
 _PERL_QUOTE_OPERATOR_RE = re.compile(r"\b(?:q[qwxr]?|m|s|tr|y)(?:\s+\S|[^\w\s])")
+_PERL_AMBIGUOUS_SIGIL_RE = re.compile(r"[$@%&*]\s*+[{#'\"`]")
 _ROOT_GLOB_DOCUMENTATION_LINE_RE = re.compile(
     r"[ \t]*(?:(?:[-*+]|#{1,6})[ \t]+)?"
     r"(?:(?:(?:documentation|note|example)[ \t]*:[ \t]*)"
@@ -1596,6 +1597,11 @@ def _perl_literal_print_shell_text(
             newline = content.find("\n", cursor)
             cursor = len(content) if newline < 0 else newline + 1
             continue
+        if character in "$@%&*" and _PERL_AMBIGUOUS_SIGIL_RE.match(content, cursor) is not None:
+            # Perl sigils can own quote punctuation (for example $' and *"),
+            # with whitespace/comments or braces inside the variable spelling.
+            # Leave those ambiguous forms outside this bounded source subset.
+            return content
         if (
             character == "/"
             or content.startswith("<<", cursor)
@@ -1607,6 +1613,15 @@ def _perl_literal_print_shell_text(
         if character not in "'\"`":
             cursor += 1
             continue
+        if cursor > 0:
+            previous = content[cursor - 1]
+            if character == "'" and (
+                previous.isalnum() or previous in "_:@%&*" or ord(previous) > 127
+            ):
+                # Apostrophes can separate legacy package names. Treat ambiguous adjacency
+                # (including print'...') conservatively instead of inventing
+                # a string that could hide an executable quote operator.
+                return content
         start = cursor
         quote = character
         cursor += 1
