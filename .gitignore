@@ -113,3 +113,7 @@ credentials.json
 /report*.md
 /report*.json
 /report*.sarif
+
+# Milde Weisheit agent (Python packaging rule above ignores all lib/)
+!/milde-weisheit/bot/lib/
+!/milde-weisheit/bot/lib/**
