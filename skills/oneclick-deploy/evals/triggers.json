@@ -1,0 +1,10 @@
+{
+  "skill": "oneclick-deploy",
+  "test_cases": [
+    {"input": "one-click deploy my electrician site to IONOS", "should_trigger": true},
+    {"input": "low budget website for Handwerk with AI and automations", "should_trigger": true},
+    {"input": "deploy business site for trades with many designs", "should_trigger": true},
+    {"input": "write a poem about servers", "should_trigger": false},
+    {"input": "help me code a React component", "should_trigger": false}
+  ]
+}
