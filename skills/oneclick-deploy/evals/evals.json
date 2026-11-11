@@ -1,0 +1,20 @@
+{
+  "skill": "oneclick-deploy",
+  "test_cases": [
+    {
+      "name": "electrician_site",
+      "input": "Deploy a low-budget website for my electrician business on IONOS with AI FAQ and quote calculator",
+      "assertions": ["Identifies Elektriker trade", "Selects professional persona and design", "Includes quote calculator and AI FAQ from automations", "Provides IONOS FTP upload steps", "Generates static site files"]
+    },
+    {
+      "name": "baker_booking",
+      "input": "One-click deploy for a bakery with online booking and product showcase, cheap hosting",
+      "assertions": ["Maps to Bäcker/Services", "Uses friendly persona", "Includes booking and catalog automations", "Recommends static or simple PHP on IONOS", "Outputs deploy package instructions"]
+    },
+    {
+      "name": "generic_handwerk",
+      "input": "Create a site for a painter with many designs and automation models for Handwerk",
+      "assertions": ["Asks or assumes Maler if unclear", "References trades and automations", "Generates multiple feature ideas", "Focuses on low-cost stable host", "Suggests self-learning update"]
+    }
+  ]
+}
