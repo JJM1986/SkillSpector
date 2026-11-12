@@ -93,9 +93,11 @@
       var q = String(event.target.q.value || "").toLowerCase();
       var hints = SITE.faq || {};
       var answer = hints.default || "Bitte nutzen Sie das Kontaktformular.";
-      // Prefer specific emergency tokens; bare "not" matches unrelated German stems.
-      if (hasToken(q, ["notdienst", "notfall", "24h", "dringend"])) {
-        answer = hints.notdienst || answer;
+      // Emergency tokens only when the scaffold embedded a notdienst FAQ
+      // (emergency_call widget). Otherwise "dringend"/"24h" must not block
+      // price or booking answers.
+      if (hints.notdienst && hasToken(q, ["notdienst", "notfall", "24h", "dringend"])) {
+        answer = hints.notdienst;
       } else if (hasToken(q, ["preis", "kost"])) {
         answer = hints.preis || answer;
       } else if (hasToken(q, ["termin", "buch"])) {
