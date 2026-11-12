@@ -79,6 +79,13 @@
     });
   }
 
+  function hasToken(text, tokens) {
+    for (var i = 0; i < tokens.length; i++) {
+      if (text.indexOf(tokens[i]) >= 0) return true;
+    }
+    return false;
+  }
+
   var faq = document.getElementById("faq-form");
   if (faq) {
     faq.addEventListener("submit", function (event) {
@@ -86,11 +93,12 @@
       var q = String(event.target.q.value || "").toLowerCase();
       var hints = SITE.faq || {};
       var answer = hints.default || "Bitte nutzen Sie das Kontaktformular.";
-      if (q.indexOf("not") >= 0 || q.indexOf("dringend") >= 0) {
+      // Prefer specific emergency tokens; bare "not" matches unrelated German stems.
+      if (hasToken(q, ["notdienst", "notfall", "24h", "dringend"])) {
         answer = hints.notdienst || answer;
-      } else if (q.indexOf("preis") >= 0 || q.indexOf("kost") >= 0) {
+      } else if (hasToken(q, ["preis", "kost"])) {
         answer = hints.preis || answer;
-      } else if (q.indexOf("termin") >= 0 || q.indexOf("buch") >= 0) {
+      } else if (hasToken(q, ["termin", "buch"])) {
         answer = hints.termin || answer;
       }
       var box = document.getElementById("faq-answer");

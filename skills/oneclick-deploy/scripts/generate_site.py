@@ -41,6 +41,43 @@ def resolve_profile(trade: str, catalog: dict) -> dict:
     return profile
 
 
+def build_faq(label: str, chosen: list[str]) -> dict:
+    """FAQ copy only references widgets actually embedded on the page."""
+    has = set(chosen)
+    has_lead = "lead_form" in has
+    contact = "das Kontaktformular" if has_lead else "uns"
+    faq = {
+        "default": (
+            f"Danke für Ihre Frage zu {label}. Schreiben Sie uns über {contact}."
+            if has_lead
+            else f"Danke für Ihre Frage zu {label}."
+        ),
+    }
+    if "emergency_call" in has:
+        faq["notdienst"] = (
+            "Für Notfälle nutzen Sie den Notdienst-Button oder rufen Sie uns an."
+        )
+    if "quote_calculator" in has:
+        faq["preis"] = (
+            "Eine grobe Kostenschätzung finden Sie im Rechner; "
+            "verbindliche Angebote nach Besichtigung."
+        )
+    elif has_lead:
+        faq["preis"] = (
+            f"Preise für {label} nennen wir gerne nach kurzer Abstimmung "
+            "über das Kontaktformular."
+        )
+    if "booking" in has:
+        faq["termin"] = (
+            "Nutzen Sie die Terminbuchung oder das Kontaktformular."
+            if has_lead
+            else "Nutzen Sie die Terminbuchung."
+        )
+    elif has_lead:
+        faq["termin"] = "Termine stimmen wir über das Kontaktformular ab."
+    return faq
+
+
 def generate(trade: str, output: str) -> Path:
     out = Path(output)
     out.mkdir(parents=True, exist_ok=True)
@@ -62,12 +99,7 @@ def generate(trade: str, output: str) -> Path:
         "persona": profile["persona"],
         "automations": chosen,
         "rates": {"hourly": 65, "per_km": 0.8},
-        "faq": {
-            "notdienst": "Für Notfälle nutzen Sie den Notdienst-Button oder rufen Sie uns an.",
-            "preis": "Eine grobe Kostenschätzung finden Sie im Rechner; verbindliche Angebote nach Besichtigung.",
-            "termin": "Nutzen Sie die Terminbuchung oder das Kontaktformular.",
-            "default": f"Danke für Ihre Frage zu {profile['label']}. Schreiben Sie uns über das Kontaktformular.",
-        },
+        "faq": build_faq(profile["label"], chosen),
     }
 
     html = (ASSETS / "template.html").read_text(encoding="utf-8")
