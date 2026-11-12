@@ -25,7 +25,7 @@ Use for requests like: deploy a site for my electrician business, create one-cli
 
 4. **Integrate LLM**: Embed simple AI features – FAQ chatbot (link to Grok or generic), content generation notes, self-learning prompts. For self-learning: document successful configs in references for future use.
 
-5. **Generate site**: Create static HTML/CSS/JS files (or simple PHP if needed for forms). Include responsive design, contact, services list, about with persona, automation widgets. Package as zip for easy upload.
+5. **Generate site**: Prefer the helper in `scripts/generate_site.py`. It maps the trade via `assets/trades.json`, embeds widgets from `assets/automations.json` (subset of `references/automations.md`), and applies `assets/base.css` plus `assets/template.html` / `assets/site.js`. Output is offline HTML/CSS/JS only — no network calls. Customize further if needed, then package as zip for upload.
 
 6. **Deploy one-click style**:
    - Prefer IONOS Webhosting: Provide FTP upload instructions or generate ready-to-upload folder. Shared hosting is cheap (~5-15€/mo), stable for static/simple sites.
@@ -50,8 +50,8 @@ Always confirm key choices (trade, design preference, must-have automations) if 
 - `references/trades.md`: List of Handwerk/Gewerbe fields and personas.
 - `references/automations.md`: Database of 50+ automation models, categorized.
 - `references/hosting.md`: IONOS and low-cost deploy guides.
-- `scripts/generate_site.py`: Optional helper to scaffold basic site (if present).
-- `assets/`: Base templates for designs.
+- `scripts/generate_site.py`: Trade-aware static scaffold (`--trade`, `--output`).
+- `assets/`: `base.css`, `template.html`, `site.js`, `trades.json`, `automations.json`.
 
 ## Common Issues
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{LABEL}} – Fachbetrieb</title>
+  <meta name="description" content="{{TAGLINE}}">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <p class="eyebrow">Oneclick Deploy · Handwerk &amp; Gewerbe</p>
+    <h1>{{LABEL}}</h1>
+    <p class="tagline">{{TAGLINE}}</p>
+    <span class="persona-badge">Persona: {{PERSONA}}</span>
+  </header>
+
+  <main class="site-main">
+    <section class="panel" id="leistungen">
+      <h2>Unsere Leistungen</h2>
+      <ul class="services">
+{{SERVICES}}
+      </ul>
+      <a class="cta" href="#kontakt">Jetzt Angebot anfordern</a>
+    </section>
+
+    <section class="panel" id="automationen">
+      <h2>Eingebundene Automationen</h2>
+      <ul class="automations">
+{{AUTO_LIST}}
+      </ul>
+    </section>
+{{WIDGETS}}
+  </main>
+
+  <footer class="site-footer">
+    © {{LABEL}} – generiert mit oneclick-deploy (statisch, ohne Netzwerkanfragen)
+  </footer>
+  <script>window.SITE = {{SITE_JSON}};</script>
+  <script src="site.js" defer></script>
+</body>
+</html>
