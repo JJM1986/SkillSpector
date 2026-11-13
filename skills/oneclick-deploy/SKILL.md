@@ -25,7 +25,7 @@ Use for requests like: deploy a site for my electrician business, create one-cli
 
 4. **Integrate LLM**: Embed simple AI features – FAQ chatbot (link to Grok or generic), content generation notes, self-learning prompts. For self-learning: document successful configs in references for future use.
 
-5. **Generate site**: Prefer the helper in `scripts/generate_site.py`. It maps the trade via `assets/trades.json`, embeds widgets from `assets/automations.json` (subset of `references/automations.md`), and applies `assets/base.css` plus `assets/template.html` / `assets/site.js`. Output is offline HTML/CSS/JS only — no network calls. Customize further if needed, then package as zip for upload.
+5. **Generate site**: Prefer the helper in `scripts/generate_site.py`. It maps the trade via `assets/trades.json`, embeds widgets from `assets/automations.json` (subset of `references/automations.md`), applies `assets/base.css` plus a persona theme from `assets/themes/`, and uses `assets/template.html` / `assets/site.js`. Pass `--zip` for an IONOS-ready upload archive. Output is offline HTML/CSS/JS only — no network calls.
 
 6. **Deploy one-click style**:
    - Prefer IONOS Webhosting: Provide FTP upload instructions or generate ready-to-upload folder. Shared hosting is cheap (~5-15€/mo), stable for static/simple sites.
@@ -50,8 +50,8 @@ Always confirm key choices (trade, design preference, must-have automations) if 
 - `references/trades.md`: List of Handwerk/Gewerbe fields and personas.
 - `references/automations.md`: Database of 50+ automation models, categorized.
 - `references/hosting.md`: IONOS and low-cost deploy guides.
-- `scripts/generate_site.py`: Trade-aware static scaffold (`--trade`, `--output`).
-- `assets/`: `base.css`, `template.html`, `site.js`, `trades.json`, `automations.json`.
+- `scripts/generate_site.py`: Trade-aware static scaffold (`--trade`, `--output`, `--zip`).
+- `assets/`: `base.css`, `themes/*.css`, `template.html`, `site.js`, `trades.json`, `automations.json`.
 
 ## Common Issues
 

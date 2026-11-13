@@ -3,6 +3,7 @@
 
 Usage (from skills/oneclick-deploy):
   python3 scripts/generate_site.py --trade Elektriker --output ./site
+  python3 scripts/generate_site.py --trade Friseur --output ./site --zip
 """
 from __future__ import annotations
 
@@ -10,10 +11,20 @@ import argparse
 import json
 import re
 import shutil
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
+THEMES = ASSETS / "themes"
+
+PERSONA_THEME = {
+    "Professional & Trustworthy": "professional",
+    "Friendly Local Hero": "friendly",
+    "Modern Expert": "modern",
+    "Classic Craft": "classic",
+    "Energetic Service": "energetic",
+}
 
 
 def norm(trade: str) -> str:
@@ -78,7 +89,34 @@ def build_faq(label: str, chosen: list[str]) -> dict:
     return faq
 
 
-def generate(trade: str, output: str) -> Path:
+def theme_for(persona: str) -> str:
+    return PERSONA_THEME.get(persona, "professional")
+
+
+def write_styles(out: Path, theme_id: str) -> None:
+    base = (ASSETS / "base.css").read_text(encoding="utf-8")
+    theme_path = THEMES / f"{theme_id}.css"
+    theme = theme_path.read_text(encoding="utf-8") if theme_path.is_file() else ""
+    (out / "styles.css").write_text(
+        base + "\n\n/* theme: " + theme_id + " */\n" + theme,
+        encoding="utf-8",
+    )
+
+
+def package_zip(out: Path) -> Path:
+    zip_path = out.with_suffix(".zip") if out.suffix != ".zip" else out.parent / f"{out.name}.zip"
+    if out.is_dir():
+        zip_path = out.parent / f"{out.name}.zip"
+    files = ["index.html", "styles.css", "site.js", "manifest.json"]
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for name in files:
+            path = out / name
+            if path.is_file():
+                zf.write(path, arcname=name)
+    return zip_path
+
+
+def generate(trade: str, output: str, *, make_zip: bool = False) -> tuple[Path, Path | None]:
     out = Path(output)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -86,6 +124,7 @@ def generate(trade: str, output: str) -> Path:
     autos = load_json("automations.json")
     profile = resolve_profile(trade, catalog)
     chosen = [a for a in profile["automations"] if a in autos]
+    theme_id = theme_for(profile["persona"])
 
     services = "\n".join(f"        <li>{s}</li>" for s in profile["services"])
     auto_list = "\n".join(
@@ -97,6 +136,7 @@ def generate(trade: str, output: str) -> Path:
     site = {
         "trade": profile["label"],
         "persona": profile["persona"],
+        "theme": theme_id,
         "automations": chosen,
         "rates": {"hourly": 65, "per_km": 0.8},
         "faq": build_faq(profile["label"], chosen),
@@ -113,13 +153,14 @@ def generate(trade: str, output: str) -> Path:
         .replace("{{SITE_JSON}}", json.dumps(site, ensure_ascii=False))
     )
     (out / "index.html").write_text(html, encoding="utf-8")
-    shutil.copyfile(ASSETS / "base.css", out / "styles.css")
+    write_styles(out, theme_id)
     shutil.copyfile(ASSETS / "site.js", out / "site.js")
     (out / "manifest.json").write_text(
         json.dumps(
             {
                 "trade": profile["label"],
                 "persona": profile["persona"],
+                "theme": theme_id,
                 "automations": chosen,
                 "files": ["index.html", "styles.css", "site.js"],
             },
@@ -129,17 +170,25 @@ def generate(trade: str, output: str) -> Path:
         + "\n",
         encoding="utf-8",
     )
-    return out
+    zip_path = package_zip(out) if make_zip else None
+    return out, zip_path
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate static trade site")
     parser.add_argument("--trade", default="Fachbetrieb")
     parser.add_argument("--output", default="./site")
+    parser.add_argument(
+        "--zip",
+        action="store_true",
+        help="Also write <output>.zip for IONOS/File-Manager upload",
+    )
     args = parser.parse_args()
-    out = generate(args.trade, args.output)
+    out, zip_path = generate(args.trade, args.output, make_zip=args.zip)
     print(f"Generated site for {args.trade} in {out}")
     print("Files: index.html, styles.css, site.js, manifest.json")
+    if zip_path is not None:
+        print(f"Upload package: {zip_path}")
 
 
 if __name__ == "__main__":
