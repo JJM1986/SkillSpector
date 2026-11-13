@@ -1,0 +1,179 @@
+/* Oneclick Deploy — shared base styles (static, no external deps) */
+:root {
+  --oc-bg: #f7f4ef;
+  --oc-surface: #ffffff;
+  --oc-ink: #1c1917;
+  --oc-muted: #57534e;
+  --oc-accent: #0f4c5c;
+  --oc-accent-2: #c45c26;
+  --oc-line: #e7e2d9;
+  --oc-radius: 10px;
+  --oc-font: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--oc-font);
+  color: var(--oc-ink);
+  background:
+    radial-gradient(ellipse at top left, rgba(15, 76, 92, 0.08), transparent 45%),
+    radial-gradient(ellipse at bottom right, rgba(196, 92, 38, 0.08), transparent 40%),
+    var(--oc-bg);
+  line-height: 1.55;
+}
+
+a {
+  color: var(--oc-accent);
+}
+
+.site-header,
+.site-main,
+.site-footer {
+  width: min(960px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.site-header {
+  padding: 2.5rem 0 1.5rem;
+}
+
+.site-header .eyebrow {
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--oc-muted);
+}
+
+.site-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.15;
+}
+
+.site-header .tagline {
+  margin: 0;
+  color: var(--oc-muted);
+  max-width: 40rem;
+}
+
+.persona-badge {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--oc-line);
+  border-radius: 999px;
+  background: var(--oc-surface);
+  font-size: 0.85rem;
+  color: var(--oc-muted);
+}
+
+.site-main {
+  display: grid;
+  gap: 1.25rem;
+  padding-bottom: 2.5rem;
+}
+
+.panel {
+  background: var(--oc-surface);
+  border: 1px solid var(--oc-line);
+  border-radius: var(--oc-radius);
+  padding: 1.25rem 1.4rem;
+}
+
+.panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+}
+
+.services,
+.automations {
+  margin: 0;
+  padding-left: 1.15rem;
+}
+
+.services li,
+.automations li {
+  margin-bottom: 0.45rem;
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.65rem 1.1rem;
+  background: var(--oc-accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.cta:hover {
+  background: color-mix(in srgb, var(--oc-accent) 82%, #000);
+}
+
+.cta-secondary {
+  background: var(--oc-accent-2);
+}
+
+.cta-secondary:hover {
+  background: color-mix(in srgb, var(--oc-accent-2) 82%, #000);
+}
+
+.emergency {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--oc-line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.calc-result,
+.faq-answer {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: var(--oc-bg);
+  border-radius: 8px;
+  color: var(--oc-muted);
+  min-height: 2.5rem;
+}
+
+.site-footer {
+  padding: 1rem 0 2rem;
+  color: var(--oc-muted);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--oc-line);
+}
+
+@media (max-width: 640px) {
+  .panel {
+    padding: 1rem;
+  }
+}

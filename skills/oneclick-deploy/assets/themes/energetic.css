@@ -1,0 +1,15 @@
+/* Persona: Energetic Service */
+:root {
+  --oc-bg: #fff7ed;
+  --oc-surface: #ffffff;
+  --oc-ink: #1f1308;
+  --oc-muted: #7a5340;
+  --oc-accent: #ea580c;
+  --oc-accent-2: #db2777;
+  --oc-line: #fed7aa;
+  --oc-radius: 16px;
+}
+
+.site-header h1 {
+  letter-spacing: -0.02em;
+}

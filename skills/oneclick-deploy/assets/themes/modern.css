@@ -1,0 +1,31 @@
+/* Persona: Modern Expert */
+:root {
+  --oc-bg: #0f1419;
+  --oc-surface: #1a222c;
+  --oc-ink: #e8eef5;
+  --oc-muted: #9aabbd;
+  --oc-accent: #3b82f6;
+  --oc-accent-2: #22d3ee;
+  --oc-line: #2b3644;
+  --oc-radius: 12px;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.18), transparent 45%),
+    radial-gradient(ellipse at bottom left, rgba(34, 211, 238, 0.12), transparent 40%),
+    var(--oc-bg);
+}
+
+input,
+textarea,
+select {
+  background: #121820;
+  color: var(--oc-ink);
+  border-color: var(--oc-line);
+}
+
+.calc-result,
+.faq-answer {
+  background: #121820;
+}

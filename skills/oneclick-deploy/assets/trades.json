@@ -1,0 +1,70 @@
+{
+  "default": {
+    "label": "Fachbetrieb",
+    "persona": "Professional & Trustworthy",
+    "tagline": "Professioneller Service in Ihrer Nähe – klar, erreichbar, lokal.",
+    "services": ["Beratung", "Ausführung", "Wartung", "Nachbetreuung"],
+    "automations": ["lead_form", "ai_faq", "quote_calculator"]
+  },
+  "aliases": {
+    "elektriker": "elektriker",
+    "elektroinstallateur": "elektriker",
+    "maler": "maler",
+    "baecker": "baecker",
+    "bäcker": "baecker",
+    "friseur": "friseur",
+    "klempner": "klempner",
+    "sanitaer": "klempner",
+    "it-dienstleister": "it",
+    "it": "it"
+  },
+  "trades": {
+    "elektriker": {
+      "label": "Elektriker",
+      "persona": "Professional & Trustworthy",
+      "tagline": "Sichere Elektroinstallation und zuverlässiger Service in Ihrer Nähe.",
+      "services": [
+        "Installation & Reparatur",
+        "Schaltanlagen & Sicherungen",
+        "Smart-Home & Beleuchtung",
+        "Notdienst nach Vereinbarung"
+      ],
+      "automations": ["quote_calculator", "emergency_call", "lead_form", "ai_faq"]
+    },
+    "maler": {
+      "label": "Maler und Lackierer",
+      "persona": "Classic Craft",
+      "tagline": "Saubere Oberflächen, klare Beratung, termintreue Ausführung.",
+      "services": ["Innenanstrich", "Fassade & Außen", "Tapezierarbeiten", "Farbberatung"],
+      "automations": ["material_calculator", "project_gallery", "lead_form", "ai_faq"]
+    },
+    "baecker": {
+      "label": "Bäcker",
+      "persona": "Friendly Local Hero",
+      "tagline": "Frische Backwaren und persönliche Beratung aus der Nachbarschaft.",
+      "services": ["Brot & Brötchen", "Kuchen & Konditorei", "Frühstücksangebot", "Vorbestellung"],
+      "automations": ["booking", "product_showcase", "lead_form", "ai_faq"]
+    },
+    "friseur": {
+      "label": "Friseur",
+      "persona": "Energetic Service",
+      "tagline": "Schnitt, Farbe und Pflege – unkompliziert online planbar.",
+      "services": ["Haarschnitt", "Farbe & Strähnen", "Pflegebehandlungen", "Bartpflege"],
+      "automations": ["booking", "lead_form", "ai_faq"]
+    },
+    "klempner": {
+      "label": "Klempner / Sanitär",
+      "persona": "Professional & Trustworthy",
+      "tagline": "Sanitär, Heizung und schnelle Hilfe bei Wasserschäden.",
+      "services": ["Rohrreparatur", "Bad & Sanitär", "Wartung", "Notdienst"],
+      "automations": ["quote_calculator", "emergency_call", "lead_form", "ai_faq"]
+    },
+    "it": {
+      "label": "IT-Dienstleister",
+      "persona": "Modern Expert",
+      "tagline": "Pragmatische IT-Hilfe für kleine Betriebe – klar, modern, erreichbar.",
+      "services": ["Support & Wartung", "Netzwerk & Sicherheit", "Cloud-Einrichtung", "Schulungen"],
+      "automations": ["booking", "lead_form", "ai_faq", "quote_calculator"]
+    }
+  }
+}

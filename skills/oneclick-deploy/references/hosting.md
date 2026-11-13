@@ -7,8 +7,8 @@ Prioritize cheapest, reliable options for German users. Focus on IONOS.
 - Supports HTML/CSS/JS, PHP, FTP/SFTP upload.
 - Domain often included or cheap.
 - Steps for one-click style:
-  1. Generate static site files locally.
-  2. Zip the public folder (index.html, assets/).
+  1. Generate static site files locally (`python3 scripts/generate_site.py --trade … --output ./site --zip`).
+  2. Use the produced `site/site.zip` (index.html, styles.css, site.js, manifest.json) or zip the folder yourself.
   3. User logs into IONOS customer area → Webhosting → FTP or File Manager.
   4. Upload and extract to public_html or root.
   5. Test URL.

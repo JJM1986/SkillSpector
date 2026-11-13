@@ -1,0 +1,42 @@
+{
+  "lead_form": {
+    "title": "Kontakt / Lead-Formular",
+    "ref": "Universal #1",
+    "html": "<section class=\"panel\" id=\"kontakt\" data-automation=\"lead_form\"><h2>Kontakt / Lead-Formular</h2><p>Kurz anfragen – wir melden uns werktags zeitnah.</p><form id=\"lead-form\"><label>Name <input name=\"name\" type=\"text\" required></label><label>E-Mail <input name=\"email\" type=\"email\" required></label><label>Nachricht <textarea name=\"message\" rows=\"4\" required></textarea></label><button class=\"cta\" type=\"submit\">Anfrage senden</button></form><p class=\"faq-answer\" id=\"lead-status\" hidden></p></section>"
+  },
+  "booking": {
+    "title": "Termin / Online-Buchung",
+    "ref": "Services #21",
+    "html": "<section class=\"panel\" id=\"termine\" data-automation=\"booking\"><h2>Termin / Online-Buchung</h2><p>Wunschtermin vormerken (ohne Backend – lokal gespeichert).</p><form id=\"booking-form\"><label>Datum <input name=\"date\" type=\"date\" required></label><label>Uhrzeit <select name=\"slot\" required><option>09:00</option><option>11:00</option><option>14:00</option><option>16:00</option></select></label><label>Name <input name=\"name\" type=\"text\" required></label><button class=\"cta\" type=\"submit\">Termin vormerken</button></form><p class=\"faq-answer\" id=\"booking-status\" hidden></p></section>"
+  },
+  "quote_calculator": {
+    "title": "Angebots- / Kostenrechner",
+    "ref": "Universal #3",
+    "html": "<section class=\"panel\" id=\"rechner\" data-automation=\"quote_calculator\"><h2>Angebots- / Kostenrechner</h2><p>Grobe Orientierung – kein verbindliches Angebot.</p><form id=\"quote-form\"><label>Umfang (Stunden) <input name=\"hours\" type=\"number\" min=\"1\" max=\"80\" value=\"4\" required></label><label>Anfahrt (km) <input name=\"km\" type=\"number\" min=\"0\" max=\"200\" value=\"10\" required></label><button class=\"cta\" type=\"submit\">Schätzung berechnen</button></form><div class=\"calc-result\" id=\"quote-result\">Ergebnis erscheint hier.</div></section>"
+  },
+  "ai_faq": {
+    "title": "FAQ-Assistent (regelbasiert)",
+    "ref": "Universal #4",
+    "html": "<section class=\"panel\" id=\"faq\" data-automation=\"ai_faq\"><h2>FAQ-Assistent (regelbasiert)</h2><p>Lokale Stichwortantworten – ohne Netzwerkanfrage.</p><form id=\"faq-form\"><label>Frage <input name=\"q\" type=\"text\" required placeholder=\"z. B. Notdienst, Preise, Termin\"></label><button class=\"cta\" type=\"submit\">Antwort zeigen</button></form><div class=\"faq-answer\" id=\"faq-answer\">Antwort erscheint hier.</div></section>"
+  },
+  "emergency_call": {
+    "title": "Notdienst-Button",
+    "ref": "Construction #11",
+    "html": "<section class=\"panel\" id=\"notdienst\" data-automation=\"emergency_call\"><h2>Notdienst-Button</h2><div class=\"emergency\"><p>Dringend? Rufen Sie den Notdienst an.</p><a class=\"cta cta-secondary\" href=\"tel:+490000000000\">Notdienst anrufen</a></div></section>"
+  },
+  "material_calculator": {
+    "title": "Materialrechner",
+    "ref": "Construction #13",
+    "html": "<section class=\"panel\" id=\"material\" data-automation=\"material_calculator\"><h2>Materialrechner (Farbe)</h2><p>Schätzung bei ca. 10 m² pro Liter und Anstrich.</p><form id=\"material-form\"><label>Fläche (m²) <input name=\"sqm\" type=\"number\" min=\"1\" value=\"40\" required></label><label>Anstriche <input name=\"coats\" type=\"number\" min=\"1\" max=\"4\" value=\"2\" required></label><button class=\"cta\" type=\"submit\">Liter schätzen</button></form><div class=\"calc-result\" id=\"material-result\">Ergebnis erscheint hier.</div></section>"
+  },
+  "project_gallery": {
+    "title": "Projektgalerie",
+    "ref": "Construction #12",
+    "html": "<section class=\"panel\" id=\"galerie\" data-automation=\"project_gallery\"><h2>Projektgalerie</h2><ul class=\"automations\"><li>Wohnzimmer – Vorher / Nachher (Platzhalter)</li><li>Fassade – Sanierung (Platzhalter)</li><li>Treppenhaus – Auffrischung (Platzhalter)</li></ul></section>"
+  },
+  "product_showcase": {
+    "title": "Produkt- / Menü-Showcase",
+    "ref": "Services #22",
+    "html": "<section class=\"panel\" id=\"angebot\" data-automation=\"product_showcase\"><h2>Produkt-Showcase</h2><ul class=\"automations\"><li>Tagesfrisches Sortiment</li><li>Saisonale Spezialitäten</li><li>Vorbestellung für Feiern</li></ul></section>"
+  }
+}
