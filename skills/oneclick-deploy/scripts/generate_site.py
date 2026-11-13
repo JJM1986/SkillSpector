@@ -104,9 +104,10 @@ def write_styles(out: Path, theme_id: str) -> None:
 
 
 def package_zip(out: Path) -> Path:
-    zip_path = out.with_suffix(".zip") if out.suffix != ".zip" else out.parent / f"{out.name}.zip"
-    if out.is_dir():
-        zip_path = out.parent / f"{out.name}.zip"
+    """Write <dirname>.zip next to the site folder; tolerate `.` / empty names."""
+    out = out.resolve()
+    folder_name = out.name if out.name not in {"", ".", ".."} else "site"
+    zip_path = out.parent / f"{folder_name}.zip"
     files = ["index.html", "styles.css", "site.js", "manifest.json"]
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for name in files:
@@ -117,7 +118,7 @@ def package_zip(out: Path) -> Path:
 
 
 def generate(trade: str, output: str, *, make_zip: bool = False) -> tuple[Path, Path | None]:
-    out = Path(output)
+    out = Path(output).resolve()
     out.mkdir(parents=True, exist_ok=True)
 
     catalog = load_json("trades.json")

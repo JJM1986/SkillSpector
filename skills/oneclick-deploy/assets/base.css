@@ -115,7 +115,7 @@ a {
 }
 
 .cta:hover {
-  background: #0b3b47;
+  background: color-mix(in srgb, var(--oc-accent) 82%, #000);
 }
 
 .cta-secondary {
@@ -123,7 +123,7 @@ a {
 }
 
 .cta-secondary:hover {
-  background: #a34a1d;
+  background: color-mix(in srgb, var(--oc-accent-2) 82%, #000);
 }
 
 .emergency {

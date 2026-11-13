@@ -2,6 +2,7 @@
 ## 2026-11-13
 - Map personas to theme CSS under `assets/themes/` (professional, friendly, modern, classic, energetic) and compose them into generated `styles.css`.
 - Add `--zip` to `scripts/generate_site.py` for a ready-to-upload static archive (IONOS File Manager / FTP).
+- Derive CTA hover colors from theme accent variables; harden zip naming for `.` / empty output paths.
 
 ## 2026-11-12
 - Wire `scripts/generate_site.py` to trade personas and automation widgets via `assets/trades.json` + `assets/automations.json` (aligned with `references/trades.md` / `references/automations.md`).
